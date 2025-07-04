@@ -139,7 +139,8 @@ class QOTD(commands.Cog):
         next_q = self.data["queue"].pop(0)
         question = next_q["question"]
 
-        await channel.send(f"{role_mention}\n**Question of the Day:** {question}")
+        msg = await channel.send(f"{role_mention}\n**Question of the Day:** {question}")
+        self.bot.dispatch("qotd_posted", msg)
         self.data["last_post_time"] = now
         save_data(self.data)
 
