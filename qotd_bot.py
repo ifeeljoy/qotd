@@ -4,6 +4,7 @@ from discord import app_commands
 import json
 import os
 import time
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -124,25 +125,38 @@ class QOTD(commands.Cog):
         submission["handled"] = True
         save_data(self.data)
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(count=1)
     async def auto_post(self):
-        now = time.time()
-        if len(self.data["queue"]) == 0:
-            return
-        if now - self.data["last_post_time"] < COOLDOWN_SECONDS:
-            return
+        while True:
+            now = time.time()
+            last_post = self.data.get("last_post_time", 0)
+            elapsed = now - last_post
+            wait_time = COOLDOWN_SECONDS - elapsed
 
-        guild = self.bot.get_guild(GUILD_ID)
-        channel = guild.get_channel(QOTD_CHANNEL_ID)
-        role_mention = f"<@&{PING_ROLE_ID}>"
+            if len(self.data.get("queue", [])) == 0:
+                print("Queue empty. Waiting 10 minutes before checking again.")
+                await asyncio.sleep(600)
+                continue
 
-        next_q = self.data["queue"].pop(0)
-        question = next_q["question"]
+            if wait_time > 0:
+                print(f"Waiting {int(wait_time)}s until next post...")
+                await asyncio.sleep(wait_time)
 
-        msg = await channel.send(f"{role_mention}\n**Question of the Day:** {question}")
-        self.bot.dispatch("qotd_posted", msg)
-        self.data["last_post_time"] = now
-        save_data(self.data)
+            guild = self.bot.get_guild(GUILD_ID)
+            channel = guild.get_channel(QOTD_CHANNEL_ID)
+            role_mention = f"<@&{PING_ROLE_ID}>"
+
+            next_q = self.data["queue"].pop(0)
+            question = next_q["question"]
+
+            msg = await channel.send(f"{role_mention}\n**Question of the Day:** {question}")
+            self.bot.dispatch("qotd_posted", msg)
+
+            self.data["last_post_time"] = time.time()
+            save_data(self.data)
+
+            print("QOTD posted. Waiting 24 hours until next post.")
+            await asyncio.sleep(COOLDOWN_SECONDS)
 
     @auto_post.before_loop
     async def before_auto_post(self):
