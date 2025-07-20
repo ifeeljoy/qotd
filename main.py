@@ -19,7 +19,6 @@ class QOTDBot(commands.Bot):
 
     async def setup_hook(self):
         await self.load_extension("qotd_bot")
-        await self.load_extension("thread_creator")
 
     async def on_ready(self):
         if not self.synced:
