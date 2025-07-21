@@ -1,6 +1,6 @@
 
 # About
-An automated user-submitted question of the day system
+An automated user-submitted question of the day system. If you do not want to host the bot on your personal device and don't mind paying for a cheap alterative ($1.50/month), use [this guide](https://github.com/ifeeljoy/self-host-guide) for setup. 
 
 # How it works
 Server members can submit questions using `/submit` followed by their question. 
