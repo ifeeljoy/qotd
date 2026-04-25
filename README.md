@@ -1,10 +1,7 @@
+### As of April 25, 2026, QotD is no longer being maintained.
 
 # About
 An automated user-submitted question of the day system. 
-
-# Hosting
-
-If you don't want to self host and don't mind paying for a cheap alterative ($1.50/month), use [this guide](https://github.com/ifeeljoy/bot-host-guide) for setup.
 
 # How it works
 Server members can submit questions using `/submit` followed by their question. 
@@ -71,6 +68,3 @@ python main.py
 # License
 
 This project is licensed under the GNU Affero General Public License v3.0. See the LICENSE file for more details.
-
-# Buy Me A Coffee
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/mozzarella)
